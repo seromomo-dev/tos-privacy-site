@@ -8,6 +8,7 @@ const eslintPluginPrettier = require('eslint-plugin-prettier');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const eslintPluginImport = require('eslint-plugin-import');
 const eslintPluginUnusedImports = require('eslint-plugin-unused-imports');
+const vitest = require('@vitest/eslint-plugin');
 
 module.exports = defineConfig([
   {
@@ -81,16 +82,16 @@ module.exports = defineConfig([
   },
   {
     files: ['**/*.html'],
-    plugins: {
-      prettier: eslintPluginPrettier
-    },
+    plugins: { prettier: eslintPluginPrettier }, // Prettierプラグインを使用
+    rules: { 'prettier/prettier': ['error', { parser: 'angular' }] } // PrettierでHTMLテンプレートを整形
+  },
+  {
+    files: ['**/*.spec.ts'],
+    plugins: { vitest },
     rules: {
-      'prettier/prettier': [
-        'error',
-        {
-          parser: 'angular'
-        }
-      ]
+      ...vitest.configs.recommended.rules, // Vitestの推奨ルールを適用
+      'vitest/consistent-test-it': ['error', { fn: 'test' }], // 'it'を'test'に統一
+      'vitest/require-top-level-describe': ['error'] // describeブロックを必須にする
     }
   }
 ]);
